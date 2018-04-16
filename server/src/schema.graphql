@@ -1,0 +1,33 @@
+# import Todo, TodoSubscriptionPayload, TodoOrderByInput from "./generated/prisma.graphql"
+
+type Query {
+  info: String!
+  feed(filter: String, skip: Int, first: Int, orderBy: TodoOrderByInput): Feed!
+}
+
+type Mutation {
+    createTodo(title: String!): Todo!
+    signup(email: String!, password: String!, name: String!): AuthPayload
+  	login(email: String!, password: String!): AuthPayload
+}
+
+type Subscription {
+  newTodo: TodoSubscriptionPayload
+}
+
+type AuthPayload {
+  token: String
+  user: User
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  todos: [Todo!]!
+}
+
+type Feed {
+  todos: [Todo!]!
+  count: Int!
+}
