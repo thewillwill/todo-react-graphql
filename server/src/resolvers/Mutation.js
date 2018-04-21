@@ -41,20 +41,51 @@ async function login(parent, args, context, info) {
 }
 
 function createTodo(parent, args, context, info) {
-  const userId = getUserId(context)
   return context.db.mutation.createTodo(
     {
       data: {
         title: args.title,
-        postedBy: { connect: { id: userId } },
+        completedAt: "0000"
       },
     },
     info,
   )
 }
 
+function markComplete(parent, args, context, info) {
+  return context.db.mutation.updateTodo(
+    { 
+      data: {completedAt:args.completedAt}, where: {id: args.id}
+    },
+    info,
+  )  
+}
+
+
+
+function updateTodoText(parent, args, context, info) {
+  return context.db.mutation.updateTodo(
+    { 
+      data: {title:args.title}, where: {id: args.id}
+    },
+    info,
+  )  
+}
+
+function deleteTodo(parent, args, context, info) {
+  return context.db.mutation.deleteTodo(
+    { 
+      where: {id: args.id}
+    },
+    info,
+  )  
+}
+
 module.exports = {
     signup,
     login,
     createTodo,
+    updateTodoText,
+    deleteTodo,
+    markComplete,
 }

@@ -11,6 +11,7 @@ type Todo implements Node {
   updatedAt: DateTime!
   title: String!
   postedBy(where: UserWhereInput): User
+  completedAt: DateTime!
 }
 
 type User implements Node {
@@ -140,6 +141,7 @@ type TodoConnection {
 
 input TodoCreateInput {
   title: String!
+  completedAt: DateTime!
   postedBy: UserCreateOneWithoutTodosInput
 }
 
@@ -150,6 +152,7 @@ input TodoCreateManyWithoutPostedByInput {
 
 input TodoCreateWithoutPostedByInput {
   title: String!
+  completedAt: DateTime!
 }
 
 """
@@ -175,6 +178,8 @@ enum TodoOrderByInput {
   updatedAt_DESC
   title_ASC
   title_DESC
+  completedAt_ASC
+  completedAt_DESC
 }
 
 type TodoPreviousValues {
@@ -182,6 +187,7 @@ type TodoPreviousValues {
   createdAt: DateTime!
   updatedAt: DateTime!
   title: String!
+  completedAt: DateTime!
 }
 
 type TodoSubscriptionPayload {
@@ -221,6 +227,7 @@ input TodoSubscriptionWhereInput {
 
 input TodoUpdateInput {
   title: String
+  completedAt: DateTime
   postedBy: UserUpdateOneWithoutTodosInput
 }
 
@@ -235,6 +242,7 @@ input TodoUpdateManyWithoutPostedByInput {
 
 input TodoUpdateWithoutPostedByDataInput {
   title: String
+  completedAt: DateTime
 }
 
 input TodoUpdateWithWhereUniqueWithoutPostedByInput {
@@ -421,6 +429,35 @@ input TodoWhereInput {
   All values not ending with the given string.
   """
   title_not_ends_with: String
+  completedAt: DateTime
+  """
+  All values that are not equal to given value.
+  """
+  completedAt_not: DateTime
+  """
+  All values that are contained in given list.
+  """
+  completedAt_in: [DateTime!]
+  """
+  All values that are not contained in given list.
+  """
+  completedAt_not_in: [DateTime!]
+  """
+  All values less than the given value.
+  """
+  completedAt_lt: DateTime
+  """
+  All values less than or equal the given value.
+  """
+  completedAt_lte: DateTime
+  """
+  All values greater than the given value.
+  """
+  completedAt_gt: DateTime
+  """
+  All values greater than or equal the given value.
+  """
+  completedAt_gte: DateTime
   postedBy: UserWhereInput
 }
 

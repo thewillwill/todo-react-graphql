@@ -6,7 +6,7 @@ import TopBar from "./TopBar";
 import Paper from "material-ui/Paper";
 import { grey } from "material-ui/colors";
 
-import TodoList from "./TodoList";
+import FinalForm from "./FinalForm";
 
 
 const paperStyle = {
@@ -29,7 +29,8 @@ class App extends Component {
         <TopBar />
         <Paper style={paperStyle}>
           <h1 style={listHeading}>Todo list</h1>
-          <TodoList />
+          <FinalForm />
+
         </Paper>
       </div>
     );

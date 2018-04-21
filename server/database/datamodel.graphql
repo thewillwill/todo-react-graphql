@@ -4,6 +4,7 @@ type Todo {
 	updatedAt: DateTime!
 	title: String!
 	postedBy: User
+	completedAt: DateTime!
 }
 
 type User {

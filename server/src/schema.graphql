@@ -7,6 +7,9 @@ type Query {
 
 type Mutation {
     createTodo(title: String!): Todo!
+    updateTodoText(id: ID!, title: String): Todo!
+    markComplete(id: ID!, completedAt: DateTime!): Todo!
+    deleteTodo(id: ID!): Todo!    
     signup(email: String!, password: String!, name: String!): AuthPayload
   	login(email: String!, password: String!): AuthPayload
 }
