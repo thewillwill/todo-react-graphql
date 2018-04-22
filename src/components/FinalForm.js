@@ -215,7 +215,7 @@ class FinalForm extends Component {
                     }
                     <AutoSave debounce={1000} save={this.save} />
                     {
-                      _.map(data.feed.todos,({id, title, completedAt}) => (
+                      _.map([..._.filter(data.feed.todos, {completedAt: BLANK_TODO.completedAt}),..._.filter(data.feed.todos, (todo) => todo.completedAt > BLANK_TODO.completedAt)],({id, title, completedAt}) => (
                       <TodoField 
                         title={title} 
                         id={id} 
