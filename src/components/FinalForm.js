@@ -71,8 +71,8 @@ class FinalForm extends Component {
       const id = key;
       const title = val;
       console.log(`id: ${id}, title:${title}`); 
-      
-      if (id === BLANK_TODO.id) {
+
+      if (id.includes(BLANK_TODO.id)) {
         console.log('Creating a new todo');
         //this is a new todo
         //don't run update
@@ -93,25 +93,30 @@ class FinalForm extends Component {
         });
         this.setState({todoAdded: false})
       }
+
       else {
         //an existing todo, do an update
+        console.log('Updating an existing todo');
+        console.log(`id: ${id}, title:${title}`); 
         this.props.updateToDoTextMutation({
           variables: {
             id,
-            title
+            title,
           },
           optimisticResponse: {
             __typename: "Mutation",
             updateTodo: {
-              id: id,
               title: title,
-              __typename: "title",
+              id: id,
+              createdAt: "0",
+              __typename: "Todo",
+              
             }
           },
           update: (store, { data: { updateTodo } }) => {
               // Read the data from our cache for this query.
             const data = store.readQuery({ query: GET_TODOS });
-            console.log("json:", JSON.stringify(data.feed.todos, 0, 2));
+            // console.log("json:", JSON.stringify(data.feed.todos, 0, 2));
             // data.todos.pop()
             store.writeQuery({
               query: GET_TODOS,
@@ -172,6 +177,22 @@ class FinalForm extends Component {
     // })
   }
 
+  _renderAddTodoFields() {
+    let AddTodos = [];
+    for (let i = this.state.count; i < DEFAULT_MAX_TODOS; i++) {
+      AddTodos.push(<TodoField 
+        name={BLANK_TODO.title} 
+        id={`${BLANK_TODO.id}${i}`} 
+        key={`${BLANK_TODO.id}${i}`} 
+        placeHolder={BLANK_TODO.placeHolder}
+        completedAt={BLANK_TODO.completedAt}
+        updateStoreAfterDelete={this._updateCacheAfterDelete}
+        updateStoreAfterComplete={this._updateCacheAfterComplete}        
+      />)
+    }
+    return AddTodos;
+  }
+
   render() {
     return (
       <Query
@@ -190,6 +211,8 @@ class FinalForm extends Component {
               >
                 {() => (
                   <div className="form">
+                    {//check if a new todo has just been created and don't update it
+                    }
                     <AutoSave debounce={1000} save={this.save} />
                     {
                       _.map(data.feed.todos,({id, title, completedAt}) => (
@@ -203,15 +226,9 @@ class FinalForm extends Component {
                         />
                       ))
                     }
-                      {(this.state.count<DEFAULT_MAX_TODOS && !this.state.todoAdded)
-                        ?<TodoField 
-                          name={BLANK_TODO.title} 
-                          id={BLANK_TODO.id} 
-                          key={BLANK_TODO.id} 
-                          placeHolder={BLANK_TODO.placeHolder}
-                          completedAt={BLANK_TODO.completedAt}
-                          />
-                        :<p>no new todo option sorry</p>}
+                      
+                    {this._renderAddTodoFields()}
+                      
                   </div>
                 )}            
               </Form>

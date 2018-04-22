@@ -37,7 +37,7 @@ class AutoSave extends Component {
     // This component doesn't have to render anything, but it can render
     // submitting state.
     return (
-      this.state.submitting && <div className="submitting">Submitting... {this.state.values.firstName}</div>
+      this.state.submitting && <div className="submitting">Submitting...</div>
     )
   }
 }

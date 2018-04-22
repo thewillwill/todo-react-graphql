@@ -3,7 +3,7 @@ import { Field } from "react-final-form";
 import gql from "graphql-tag";
 import { graphql, compose } from "react-apollo";
 import Button from "material-ui/Button";
-import { Delete, CheckBoxOutlineBlank } from "@material-ui/icons/";
+import { Delete, CheckBoxOutlineBlank, CheckBox } from "@material-ui/icons/";
 
 import { BLANK_TODO } from "../constants";
 
@@ -27,6 +27,20 @@ const MARK_COMPLETE_MUTATION = gql`
 `;
 
 export class TodoField extends Component {
+  constructor(props) {
+    super(props);
+    // create a ref to store the textInput DOM element
+    this.textInput = React.createRef();;
+  }
+
+  focusTextInput = () => {
+    console.log('textInput:', this.textInput)
+    if (this.textInput) {
+      this.textInput.current.state.state.focus();
+      console.log('this.textInput.focus', this.textInput.current.state.state)
+    }
+  };
+
   removeTodo = async () => {
     let { id, title } = this.props;
     this.props.deleteTodoMutation({
@@ -49,50 +63,69 @@ export class TodoField extends Component {
   };
 
   markComplete = async () => {
-    const { id, title } = this.props;
-    const completedAt = new Date().toISOString();
-    console.log("markComplete()", completedAt);
+    this.focusTextInput();
+    const { id, title, completedAt } = this.props;
+    //check if Todo is already completed
+    //if already complete set it back to not complete
+    let completedTime = completedAt > BLANK_TODO.completedAt?
+                          BLANK_TODO.completedAt:
+                          new Date().toISOString();
+    
+    console.log("markComplete()", completedTime);
 
     this.props.markCompleteMutation({
       variables: {
         id,
-        completedAt
+        completedAt: completedTime,
       },
       optimisticResponse: {
         __typename: "Mutation",
         markComplete: {
           id: id,
           title: title,
-          completedAt: completedAt,
+          completedAt: completedTime,
           __typename: "title"
         }
       },
       update: (store, { data: { completedTodo } }) => {
-        console.log("completed todo with ID: ", id);
-        this.props.updateStoreAfterComplete(store, completedAt, id);
+        // console.log("completed todo with ID: ", id);
+        this.props.updateStoreAfterComplete(store, completedTime, id);
+        this.setState({completedAt: completedTime})
       }
     });
-    
-console.log('L78')
   }
 
   render() {
-    let { id, title, completedAt } = this.props;
-    console.log("completedAt for todo:", completedAt);
+    let { id, completedAt } = this.props;
+    // console.log("completedAt for todo:", completedAt);
+    const completed = completedAt > BLANK_TODO.completedAt;
+    // console.log('render() completedAt', completedAt)
+
     return (
       <div>
-        <label>{completedAt} </label>
-        <Field
-          name={id}
-          component="input"
-          type="text"
-          placeholder={BLANK_TODO.placeHolder}
-        />
 
-        {id !== BLANK_TODO.id && (
+        <div 
+          //onClick={this.focusTextInput}
+          onClick={!id.includes(BLANK_TODO.id)?this.markComplete: undefined}
+        >
+          <Field
+            name={id}
+            component="input"
+            type="text"
+            placeholder={BLANK_TODO.placeHolder}
+            className={completed?"completed":"notComplete"}
+            disabled={completed}
+            ref={this.textInput}
+          />
+        </div>
+
+        { //check if 'new' exists
+          !id.includes(BLANK_TODO.id) && (
           <React.Fragment>
             <Button onClick={this.markComplete} color="primary">
-              <CheckBoxOutlineBlank color="secondary" />
+              {completed?
+                <CheckBox color="secondary" />:
+                <CheckBoxOutlineBlank color="secondary" />}
             </Button>
 
             <Button onClick={this.removeTodo} color="primary">

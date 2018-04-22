@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components'
 
+
 const btn = (light, dark) => css`
   white-space: nowrap;
   display: inline-block;
@@ -35,6 +36,10 @@ const btnPrimary = btn('#4f93ce', '#285f8f')
 const btnDanger = btn('#e27c79', '#c9302c')
 
 export default styled.div`
+
+  .completed {
+    text-decoration: line-through;
+  }
   font-family: sans-serif;
 
   h1 {
@@ -94,8 +99,9 @@ export default styled.div`
         color: #333;
         width: 110px;
         min-width: 60px;
-        font-size: 1em;
+        font-size: 0.5em;
         line-height: 32px;
+        white-space: nowrap;
       }
       & > input,
       & > select,
@@ -106,6 +112,10 @@ export default styled.div`
         margin-left: 15px;
         border: 1px solid #ccc;
         border-radius: 3px;
+        & > completed {
+        	text-decoration: line-through;	
+        }
+        }
       }
       & > input[type='checkbox'] {
         margin-top: 7px;
