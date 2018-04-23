@@ -1,40 +1,99 @@
-import React, { Component } from "react";
-import "./App.css";
-import CssBaseline from "material-ui/CssBaseline";
+import React from "react";
+import PropTypes from "prop-types";
+import { withStyles } from "material-ui/styles";
+import Drawer from "material-ui/Drawer";
+import AppBar from "material-ui/AppBar";
+import Toolbar from "material-ui/Toolbar";
 
-import TopBar from "./TopBar";
-import Paper from "material-ui/Paper";
-import { grey } from "material-ui/colors";
+import Typography from "material-ui/Typography";
+import Divider from "material-ui/Divider";
+import { Search } from "@material-ui/icons/";
+import Input, { InputAdornment } from 'material-ui/Input';
+import { FormControl } from 'material-ui/Form';
+
+import ListTodos from './ListTodos';
+
+
 
 import FinalForm from "./FinalForm";
 
+const drawerWidth = 240;
 
-const paperStyle = {
-  marginTop: 5,
-  marginBottom: 5,
-  marginRight: 10,
-  marginLeft: 10
-};
+const styles = theme => ({
+  root: {
+    flexGrow: 1,
+    zIndex: 1,
+    overflow: "hidden",
+    position: "relative",
+    display: "flex"
+  },
+  appBar: {
+    zIndex: theme.zIndex.drawer + 1
+  },
+  drawerPaper: {
+    position: "relative",
+    width: drawerWidth
+  },
+  content: {
+    flexGrow: 1,
+    backgroundColor: theme.palette.background.default,
+    padding: theme.spacing.unit * 3,
+    minWidth: 0 // So the Typography noWrap works
+  },
+  toolbar: theme.mixins.toolbar,
+  margin: {
+    margin: theme.spacing.unit,
+  },
+});
 
-const listHeading = {
-  textAlign: "center",
-  color: grey[500]
-};
+function ClippedDrawer(props) {
+  const { classes } = props;
 
-class App extends Component {
-  render() {
-    return (
-      <div>
-        <CssBaseline />
-        <TopBar />
-        <Paper style={paperStyle}>
-          <h1 style={listHeading}>Todo list</h1>
-          <FinalForm />
+  return (
+    <div className={classes.root}>
+      <AppBar position="absolute" className={classes.appBar}>
+        <Toolbar>
+          <Typography variant="title" color="inherit" noWrap>
+            Wilba
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Drawer
+        variant="permanent"
+        classes={{
+          paper: classes.drawerPaper
+        }}
+      >
+        <div className={classes.toolbar} />
+        <FormControl className={classes.margin}>
+          <Input
+            id="search-list"
+            startAdornment={
+              <InputAdornment position="start">
+                <Search />
+              </InputAdornment>
+            }
+          />
+        </FormControl>
 
-        </Paper>
-      </div>
-    );
-  }
+        <Divider />
+        
+        <ListTodos/>
+
+      </Drawer>
+      <main className={classes.content}>
+        <div className={classes.toolbar} />
+        <Typography noWrap>
+          {"You think water moves fast? You should see ice."}
+        </Typography>
+        <FinalForm />
+      </main>
+    </div>
+  );
 }
 
-export default App;
+ClippedDrawer.propTypes = {
+  classes: PropTypes.object.isRequired
+};
+
+export default withStyles(styles)(ClippedDrawer);
